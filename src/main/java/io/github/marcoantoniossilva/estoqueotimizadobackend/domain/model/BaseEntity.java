@@ -2,10 +2,7 @@ package io.github.marcoantoniossilva.estoqueotimizadobackend.domain.model;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
@@ -25,4 +22,14 @@ public class BaseEntity {
   @ManyToOne
   @JoinColumn(name = "updated_by")
   private User updatedBy;
+
+  @PrePersist
+  public void prePersist(){
+    this.registerIn = LocalDateTime.now();
+  }
+
+  @PreUpdate
+  public void preUpdate(){
+    this.updatedIn = LocalDateTime.now();
+  }
 }
