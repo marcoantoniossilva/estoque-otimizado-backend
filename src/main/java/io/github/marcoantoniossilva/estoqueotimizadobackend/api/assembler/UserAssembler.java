@@ -21,9 +21,9 @@ public class UserAssembler {
         return modelMapper.map(user, UserDTO.class);
     }
 
-  public User dtoToEntity(UserDTO userDTO) {
-    return modelMapper.map(userDTO, User.class);
-  }
+    public User dtoToEntity(UserDTO userDTO) {
+        return modelMapper.map(userDTO, User.class);
+    }
 
     public List<UserDTO> collectionEntityToCollectionDTO(List<User> users) {
         return users.stream()
