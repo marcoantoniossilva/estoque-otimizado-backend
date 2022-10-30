@@ -11,4 +11,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
   Page<Product> listByBoxId(String boxId, Pageable pageable);
 
+  Page<Product> findByDescriptionContaining(String description, Pageable pageable);
+
 }
