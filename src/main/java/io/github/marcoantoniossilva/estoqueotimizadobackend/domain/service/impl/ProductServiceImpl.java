@@ -6,9 +6,9 @@ import io.github.marcoantoniossilva.estoqueotimizadobackend.domain.service.Produ
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
+@Service
 public class ProductServiceImpl extends BaseCrudServiceImpl<Product,Long>
         implements ProductService {
 
@@ -29,7 +29,12 @@ public class ProductServiceImpl extends BaseCrudServiceImpl<Product,Long>
     }
 
     @Override
-    public Page<Product> listByBoxId(String boxId, Pageable pageable) {
-        return repository.listByBoxId(boxId, pageable);
+    public Page<Product> findByBoxBoxId(String boxId, Pageable pageable) {
+        return repository.findByBoxBoxId(boxId, pageable);
+    }
+
+    @Override
+    public String findBoxIdByProductId(Long productId) {
+        return repository.findBoxIdByProductId(productId);
     }
 }

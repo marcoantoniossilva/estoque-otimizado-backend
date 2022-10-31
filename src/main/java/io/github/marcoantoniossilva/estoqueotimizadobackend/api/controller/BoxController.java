@@ -6,6 +6,7 @@ import io.github.marcoantoniossilva.estoqueotimizadobackend.api.model.input.BoxI
 import io.github.marcoantoniossilva.estoqueotimizadobackend.domain.model.Box;
 import io.github.marcoantoniossilva.estoqueotimizadobackend.domain.model.User;
 import io.github.marcoantoniossilva.estoqueotimizadobackend.domain.service.BoxService;
+import io.github.marcoantoniossilva.estoqueotimizadobackend.domain.service.ProductService;
 import io.github.marcoantoniossilva.estoqueotimizadobackend.security.SecurityUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,7 @@ import javax.validation.Valid;
 public class BoxController {
 
   private BoxService boxService;
+  private ProductService productService;
   private BoxAssembler boxAssembler;
 
   @GetMapping
@@ -33,7 +35,7 @@ public class BoxController {
 
   @GetMapping("search")
   public Page<BoxDTO> search(@RequestParam String searchTerm, @PageableDefault Pageable pageable) {
-    Page<Box> result = boxService.findByIdContaining(searchTerm, pageable);
+    Page<Box> result = boxService.findByBoxIdContaining(searchTerm, pageable);
     return boxAssembler.pageEntityToPageModel(result);
   }
 
@@ -46,7 +48,9 @@ public class BoxController {
 
   @GetMapping("/getByProductId/{productId}")
   public ResponseEntity<BoxDTO> getById(@PathVariable Long productId) {
-    return boxService.findByProductId(productId)
+
+    String boxId = productService.findBoxIdByProductId(productId);
+    return boxService.findById(boxId)
             .map(box -> ResponseEntity.ok(boxAssembler.entityToDTO(box)))
             .orElse(ResponseEntity.notFound().build());
   }

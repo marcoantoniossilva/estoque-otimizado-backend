@@ -11,11 +11,7 @@ import java.util.Optional;
 @Repository
 public interface BoxRepository extends JpaRepository<Box, String> {
 
-  Page<Box> listByBoxIdContaining(String boxId, Pageable pageable);
-
-  Optional<Box> findByBoxIdContaining(String boxId);
-
-  Optional<Box> findByProductId(Long productId);
+  Page<Box> findByBoxIdContaining(String boxId, Pageable pageable);
 
   Long countByBoxIdContaining(String boxId);
 

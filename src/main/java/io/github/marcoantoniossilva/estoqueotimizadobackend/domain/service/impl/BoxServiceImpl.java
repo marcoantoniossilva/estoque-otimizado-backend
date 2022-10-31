@@ -6,9 +6,9 @@ import io.github.marcoantoniossilva.estoqueotimizadobackend.domain.service.BoxSe
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
+@Service
 public class BoxServiceImpl extends BaseCrudServiceImpl<Box, String>
         implements BoxService {
 
@@ -24,12 +24,8 @@ public class BoxServiceImpl extends BaseCrudServiceImpl<Box, String>
     }
 
     @Override
-    public Page<Box> findByIdContaining(String term, Pageable pageable) {
-        return repository.listByBoxIdContaining(term, pageable);
+    public Page<Box> findByBoxIdContaining(String term, Pageable pageable) {
+        return repository.findByBoxIdContaining(term, pageable);
     }
 
-    @Override
-    public Optional<Box> findByProductId(Long productId) {
-        return repository.findByProductId(productId);
-    }
 }

@@ -8,5 +8,7 @@ public interface ProductService extends BaseCrudService<Product, Long> {
 
     Page<Product> findByDescriptionContaining(String description, Pageable pageable);
 
-    Page<Product> listByBoxId(String boxId, Pageable pageable);
+    Page<Product> findByBoxBoxId(String boxId, Pageable pageable);
+
+    String findBoxIdByProductId(Long productId);
 }

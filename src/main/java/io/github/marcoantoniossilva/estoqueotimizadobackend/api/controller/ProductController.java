@@ -48,7 +48,7 @@ public class ProductController {
 
     @GetMapping("/listByBoxId/{boxId}")
     public Page<ProductDTO> listByBoxId(@PathVariable String boxId, @PageableDefault Pageable pageable) {
-        Page<Product> pageProducts = productService.listByBoxId(boxId, pageable);
+        Page<Product> pageProducts = productService.findByBoxBoxId(boxId, pageable);
         return productAssembler.pageEntityToPageModel(pageProducts);
     }
 
