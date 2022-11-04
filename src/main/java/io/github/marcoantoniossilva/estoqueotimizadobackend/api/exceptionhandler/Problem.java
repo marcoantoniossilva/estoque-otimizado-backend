@@ -1,12 +1,20 @@
 package io.github.marcoantoniossilva.estoqueotimizadobackend.api.exceptionhandler;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Problem {
+
+    private static final long serialVersionUID = 1L;
 
     private Integer status;
 
@@ -16,55 +24,10 @@ public class Problem {
 
     private List<Field> fields;
 
-    public Problem() {
-    }
-
-    public Problem(Integer status, LocalDateTime dateTime, String title, List<Field> fields) {
-        this.status = status;
-        this.dateTime = dateTime;
-        this.title = title;
-        this.fields = fields;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public List<Field> getFields() {
-        return fields;
-    }
-
-    public void setFields(List<Field> fields) {
-        this.fields = fields;
-    }
-
+    @Data
+    @AllArgsConstructor
     public static class Field {
         private String name;
         private String message;
-
-        public Field(String name, String message) {
-            this.name = name;
-            this.message = message;
-        }
     }
 }

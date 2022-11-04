@@ -6,23 +6,23 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Getter
 @Setter
 @Entity
-@Table(name="boxes")
+@Table(name="products")
 public class Product extends BaseEntity{
 
   @EqualsAndHashCode.Include
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Id
-  @Column(name="id_product")
-  private Long productId;
+  private Long id;
 
   private String description;
 
   private String barcode;
 
   @ManyToOne
+  @JoinColumn(name="box_id")
   private Box box;
 
 }

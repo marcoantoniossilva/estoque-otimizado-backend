@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Getter
 @Setter
 @Entity
@@ -15,9 +14,8 @@ public class User {
 
   @EqualsAndHashCode.Include
   @Id
-  @Column(name="id_user")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long userId;
+  private Long id;
 
   private String name;
 

@@ -62,7 +62,7 @@ public class UserController {
         if (!userService.existsById(userId)) {
             return ResponseEntity.notFound().build();
         }
-        user.setUserId(userId);
+        user.setId(userId);
         User savedUser = userService.save(user);
         return ResponseEntity.ok(userAssembler.entityToDTO(savedUser));
     }

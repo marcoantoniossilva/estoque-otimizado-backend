@@ -7,7 +7,6 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.List;
 
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Getter
 @Setter
 @Entity
@@ -15,9 +14,11 @@ import java.util.List;
 public class Box extends BaseEntity{
 
   @EqualsAndHashCode.Include
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Id
-  @Column(name="id_box")
-  private String boxId;
+  private Long id;
+
+  private String code;
 
   private String street;
 

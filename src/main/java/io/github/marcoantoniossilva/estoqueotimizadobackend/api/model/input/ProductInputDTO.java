@@ -2,23 +2,23 @@ package io.github.marcoantoniossilva.estoqueotimizadobackend.api.model.input;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 
 @Data
 public class ProductInputDTO {
 
-    @NotNull
-    @Positive
-    private Long productId;
-
-    @NotNull
+    @NotBlank
     private String description;
 
-    @NotNull
+    @NotBlank
+    @Size(min=1,max=13)
     private String barCode;
 
-    @NotNull
-    private String boxId;
+    @NotBlank
+    @Size(min=1,max=13)
+    private String boxCode;
 
 }

@@ -10,7 +10,8 @@ import java.util.List;
 @Data
 public class BoxDTO extends BaseModelDTO{
 
-    private String boxId;
+    private Long boxId;
+    private String code;
     private String street;
     private String rack;
     private String column;

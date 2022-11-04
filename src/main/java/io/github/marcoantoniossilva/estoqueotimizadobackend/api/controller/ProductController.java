@@ -54,7 +54,7 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    private ProductDTO add(@Valid @ModelAttribute ProductInputDTO productInputDTO) {
+    private ProductDTO add(@Valid @RequestBody ProductInputDTO productInputDTO) {
 
         User user = SecurityUtils.getLoggedUser();
         Product product = productAssembler.dtoToEntity(productInputDTO);
@@ -65,10 +65,10 @@ public class ProductController {
     }
 
     @PutMapping("{productId}")
-    public ResponseEntity<ProductDTO> update(@Valid @ModelAttribute ProductInputDTO productInputDTO,
+    public ResponseEntity<ProductDTO> update(@Valid @RequestBody ProductInputDTO productInputDTO,
                                              @PathVariable Long productId) {
         if (!productService.existsById(productId) ||
-                boxService.existsById(productInputDTO.getBoxId())) {
+                !boxService.existsByCode(productInputDTO.getBoxCode())) {
             return ResponseEntity.notFound().build();
         }
 

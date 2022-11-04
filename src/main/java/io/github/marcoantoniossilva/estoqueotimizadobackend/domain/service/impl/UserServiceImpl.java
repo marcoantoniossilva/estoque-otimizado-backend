@@ -36,10 +36,10 @@ public class UserServiceImpl extends BaseCrudServiceImpl<User,Long>
             throw new BusinessException("Já existe um usuário cadastrado com este email!");
         }
 
-        if (user.getUserId() == null) {
+        if (user.getId() == null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         } else {
-            user.setPassword(repository.getReferenceById(user.getUserId()).getPassword());
+            user.setPassword(repository.getReferenceById(user.getId()).getPassword());
         }
 
         return repository.save(user);

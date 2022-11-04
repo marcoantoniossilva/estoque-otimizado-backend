@@ -8,8 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
-public class BoxServiceImpl extends BaseCrudServiceImpl<Box, String>
+public class BoxServiceImpl extends BaseCrudServiceImpl<Box, Long>
         implements BoxService {
 
     private final BoxRepository repository;
@@ -19,13 +21,28 @@ public class BoxServiceImpl extends BaseCrudServiceImpl<Box, String>
     }
 
     @Override
-    protected JpaRepository<Box, String> getRepository() {
+    protected JpaRepository<Box, Long> getRepository() {
         return this.repository;
     }
 
     @Override
-    public Page<Box> findByBoxIdContaining(String term, Pageable pageable) {
-        return repository.findByBoxIdContaining(term, pageable);
+    public Page<Box> findByBoxCodeIgnoreCaseContaining(String term, Pageable pageable) {
+        return repository.findByCodeIgnoreCaseContaining(term, pageable);
+    }
+
+    @Override
+    public Optional<Box> findByCode(String boxCode){
+        return repository.findByCode(boxCode);
+    }
+
+    @Override
+    public boolean existsByCode(String boxCode){
+        return repository.existsByCode(boxCode);
+    }
+
+    @Override
+    public void deleteByCode(String boxCode){
+        repository.deleteByCode(boxCode);
     }
 
 }

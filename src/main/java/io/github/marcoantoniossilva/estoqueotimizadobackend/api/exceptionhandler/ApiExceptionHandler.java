@@ -27,6 +27,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     private MessageSource messageSource;
 
+    public ApiExceptionHandler(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,

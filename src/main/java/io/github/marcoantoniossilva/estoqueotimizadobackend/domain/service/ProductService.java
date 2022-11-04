@@ -1,8 +1,11 @@
 package io.github.marcoantoniossilva.estoqueotimizadobackend.domain.service;
 
+import io.github.marcoantoniossilva.estoqueotimizadobackend.domain.model.Box;
 import io.github.marcoantoniossilva.estoqueotimizadobackend.domain.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.Optional;
 
 public interface ProductService extends BaseCrudService<Product, Long> {
 
@@ -10,5 +13,5 @@ public interface ProductService extends BaseCrudService<Product, Long> {
 
     Page<Product> findByBoxBoxId(String boxId, Pageable pageable);
 
-    String findBoxIdByProductId(Long productId);
+    Optional<Box> findBoxById(Long productId);
 }

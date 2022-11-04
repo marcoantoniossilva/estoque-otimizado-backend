@@ -3,12 +3,17 @@ package io.github.marcoantoniossilva.estoqueotimizadobackend.api.controller;
 import io.github.marcoantoniossilva.estoqueotimizadobackend.api.assembler.BoxAssembler;
 import io.github.marcoantoniossilva.estoqueotimizadobackend.api.model.BoxDTO;
 import io.github.marcoantoniossilva.estoqueotimizadobackend.api.model.input.BoxInputDTO;
+import io.github.marcoantoniossilva.estoqueotimizadobackend.common.utils.BoxUtils;
+import io.github.marcoantoniossilva.estoqueotimizadobackend.common.utils.EntityUtils;
 import io.github.marcoantoniossilva.estoqueotimizadobackend.domain.model.Box;
 import io.github.marcoantoniossilva.estoqueotimizadobackend.domain.model.User;
 import io.github.marcoantoniossilva.estoqueotimizadobackend.domain.service.BoxService;
 import io.github.marcoantoniossilva.estoqueotimizadobackend.domain.service.ProductService;
 import io.github.marcoantoniossilva.estoqueotimizadobackend.security.SecurityUtils;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -26,6 +31,7 @@ public class BoxController {
   private BoxService boxService;
   private ProductService productService;
   private BoxAssembler boxAssembler;
+  private EntityUtils<Box> entityUtils;
 
   @GetMapping
   private Page<BoxDTO> list(@PageableDefault Pageable pageable) {
@@ -35,32 +41,33 @@ public class BoxController {
 
   @GetMapping("search")
   public Page<BoxDTO> search(@RequestParam String searchTerm, @PageableDefault Pageable pageable) {
-    Page<Box> result = boxService.findByBoxIdContaining(searchTerm, pageable);
+    Page<Box> result = boxService.findByBoxCodeIgnoreCaseContaining(searchTerm, pageable);
     return boxAssembler.pageEntityToPageModel(result);
   }
 
-  @GetMapping("{boxId}")
-  public ResponseEntity<BoxDTO> getById(@PathVariable String boxId) {
-    return boxService.findById(boxId)
+  @GetMapping("{boxCode}")
+  public ResponseEntity<BoxDTO> getByCode(@PathVariable String boxCode) {
+    String convertedCode = BoxUtils.convertSeparator(boxCode);
+    return boxService.findByCode(convertedCode)
             .map(box -> ResponseEntity.ok(boxAssembler.entityToDTO(box)))
             .orElse(ResponseEntity.notFound().build());
   }
 
   @GetMapping("/getByProductId/{productId}")
-  public ResponseEntity<BoxDTO> getById(@PathVariable Long productId) {
-
-    String boxId = productService.findBoxIdByProductId(productId);
-    return boxService.findById(boxId)
+  public ResponseEntity<BoxDTO> getByProductId(@PathVariable Long productId) {
+    return productService.findBoxById(productId)
             .map(box -> ResponseEntity.ok(boxAssembler.entityToDTO(box)))
             .orElse(ResponseEntity.notFound().build());
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  private BoxDTO add(@Valid @ModelAttribute BoxInputDTO boxInputDTO) {
+  private BoxDTO add(@Valid @RequestBody BoxInputDTO boxInputDTO) {
+    Box box = boxAssembler.dtoToEntity(boxInputDTO);
+    String boxCode = BoxUtils.generateBoxCodeByBoxInputDto(boxInputDTO);
+    box.setCode(boxCode);
 
     User user = SecurityUtils.getLoggedUser();
-    Box box = boxAssembler.dtoToEntity(boxInputDTO);
     box.setRegisterBy(user);
 
     Box savedBox = boxService.save(box);
@@ -68,23 +75,24 @@ public class BoxController {
   }
 
   @PutMapping("{boxId}")
-  public ResponseEntity<BoxDTO> update(@Valid @ModelAttribute BoxInputDTO boxInputDTO,
-                                       @PathVariable String boxId) {
-    if (!boxService.existsById(boxId)) {
-      return ResponseEntity.notFound().build();
-    }
+  public ResponseEntity<BoxDTO> update(@Valid @RequestBody BoxInputDTO boxInputDTO,
+                                       @PathVariable Long boxId) {
+    Box oldBox = boxService.findByIdOrException(boxId);
 
-    boxInputDTO.setBoxId(boxId);
     User user = SecurityUtils.getLoggedUser();
-    Box box = boxAssembler.dtoToEntity(boxInputDTO);
-    box.setUpdatedBy(user);
+    Box updatedBox = boxAssembler.dtoToEntity(boxInputDTO);
+    updatedBox.setUpdatedBy(user);
+    Box mergedBox = entityUtils.merge(updatedBox,oldBox);
 
-    Box savedBox = boxService.save(box);
+    String boxCode = BoxUtils.generateBoxCodeByBox(mergedBox);
+    mergedBox.setCode(boxCode);
+
+    Box savedBox = boxService.save(mergedBox);
     return ResponseEntity.ok(boxAssembler.entityToDTO(savedBox));
   }
 
   @DeleteMapping("{boxId}")
-  public ResponseEntity<Void> delete(@PathVariable String boxId) {
+  public ResponseEntity<Void> delete(@PathVariable Long boxId) {
     if (!boxService.existsById(boxId)) {
       return ResponseEntity.notFound().build();
     }

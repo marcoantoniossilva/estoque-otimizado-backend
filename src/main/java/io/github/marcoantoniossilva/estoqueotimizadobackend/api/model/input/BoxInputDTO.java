@@ -2,23 +2,27 @@ package io.github.marcoantoniossilva.estoqueotimizadobackend.api.model.input;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Data
 public class BoxInputDTO {
 
-    private String boxId;
-
-    @NotNull
+    @NotBlank
+    @Size(min=1,max=4)
     private String street;
 
-    @NotNull
+    @NotBlank
+    @Size(min=1,max=3)
     private String rack;
 
-    @NotNull
+    @NotBlank
+    @Size(min=1,max=3)
     private String column;
 
-    @NotNull
+    @NotBlank
+    @Size(min=1,max=3)
     private String line;
 
 }

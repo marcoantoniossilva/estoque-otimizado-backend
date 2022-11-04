@@ -4,8 +4,16 @@ import io.github.marcoantoniossilva.estoqueotimizadobackend.domain.model.Box;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface BoxService extends BaseCrudService<Box,String> {
+import java.util.Optional;
 
-    Page<Box> findByBoxIdContaining(String term, Pageable pageable);
+public interface BoxService extends BaseCrudService<Box,Long> {
+
+    Page<Box> findByBoxCodeIgnoreCaseContaining(String term, Pageable pageable);
+
+    Optional<Box> findByCode(String boxCode);
+
+    boolean existsByCode(String boxCode);
+
+    void deleteByCode(String boxCode);
 
 }
