@@ -9,9 +9,9 @@ import java.util.Optional;
 
 public interface ProductService extends BaseCrudService<Product, Long> {
 
-    Page<Product> findByDescriptionContaining(String description, Pageable pageable);
+    Page<Product> findByDescriptionIgnoreCaseContaining(String description, Pageable pageable);
 
-    Page<Product> findByBoxBoxId(String boxId, Pageable pageable);
+    Page<Product> findByBoxBoxId(Long boxId, Pageable pageable);
 
-    Optional<Box> findBoxById(Long productId);
+    Optional<Box> getBoxById(Long productId);
 }

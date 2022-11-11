@@ -3,9 +3,9 @@ package io.github.marcoantoniossilva.estoqueotimizadobackend.api.controller;
 import io.github.marcoantoniossilva.estoqueotimizadobackend.api.assembler.ProductAssembler;
 import io.github.marcoantoniossilva.estoqueotimizadobackend.api.model.ProductDTO;
 import io.github.marcoantoniossilva.estoqueotimizadobackend.api.model.input.ProductInputDTO;
+import io.github.marcoantoniossilva.estoqueotimizadobackend.common.utils.EntityUtils;
 import io.github.marcoantoniossilva.estoqueotimizadobackend.domain.model.Product;
 import io.github.marcoantoniossilva.estoqueotimizadobackend.domain.model.User;
-import io.github.marcoantoniossilva.estoqueotimizadobackend.domain.service.BoxService;
 import io.github.marcoantoniossilva.estoqueotimizadobackend.domain.service.ProductService;
 import io.github.marcoantoniossilva.estoqueotimizadobackend.security.SecurityUtils;
 import lombok.AllArgsConstructor;
@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @RestController
@@ -24,8 +25,9 @@ import javax.validation.Valid;
 public class ProductController {
 
     private ProductService productService;
-    private BoxService boxService;
     private ProductAssembler productAssembler;
+    private EntityUtils<Product> entityUtils;
+
 
     @GetMapping
     private Page<ProductDTO> list(@PageableDefault Pageable pageable) {
@@ -35,7 +37,7 @@ public class ProductController {
 
     @GetMapping("search")
     public Page<ProductDTO> search(@RequestParam String searchTerm, @PageableDefault Pageable pageable) {
-        Page<Product> result = productService.findByDescriptionContaining(searchTerm, pageable);
+        Page<Product> result = productService.findByDescriptionIgnoreCaseContaining(searchTerm, pageable);
         return productAssembler.pageEntityToPageModel(result);
     }
 
@@ -47,7 +49,7 @@ public class ProductController {
     }
 
     @GetMapping("/listByBoxId/{boxId}")
-    public Page<ProductDTO> listByBoxId(@PathVariable String boxId, @PageableDefault Pageable pageable) {
+    public Page<ProductDTO> listByBoxId(@PathVariable Long boxId, @PageableDefault Pageable pageable) {
         Page<Product> pageProducts = productService.findByBoxBoxId(boxId, pageable);
         return productAssembler.pageEntityToPageModel(pageProducts);
     }
@@ -67,17 +69,19 @@ public class ProductController {
     @PutMapping("{productId}")
     public ResponseEntity<ProductDTO> update(@Valid @RequestBody ProductInputDTO productInputDTO,
                                              @PathVariable Long productId) {
-        if (!productService.existsById(productId) ||
-                !boxService.existsByCode(productInputDTO.getBoxCode())) {
+        if (!productService.existsById(productId)) {
             return ResponseEntity.notFound().build();
         }
+        Product oldProduct = productService.findByIdOrException(productId);
 
-        productInputDTO.setProductId(productId);
         User user = SecurityUtils.getLoggedUser();
-        Product product = productAssembler.dtoToEntity(productInputDTO);
-        product.setUpdatedBy(user);
+        Product updatedProduct = productAssembler.dtoToEntity(productInputDTO);
+        updatedProduct.setUpdatedBy(user);
+        updatedProduct.setUpdatedIn(LocalDateTime.now());
+        entityUtils.merge(updatedProduct, oldProduct);
 
-        Product savedProduct = productService.save(product);
+        oldProduct.setId(productId);
+        Product savedProduct = productService.save(oldProduct);
         return ResponseEntity.ok(productAssembler.entityToDTO(savedProduct));
     }
 

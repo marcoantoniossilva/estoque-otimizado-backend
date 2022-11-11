@@ -5,15 +5,16 @@ import io.github.marcoantoniossilva.estoqueotimizadobackend.domain.model.Product
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-  Page<Product> findByBoxId(String boxId, Pageable pageable);
+  Page<Product> findByBoxId(Long boxId, Pageable pageable);
 
-  Page<Product> findByDescriptionContaining(String description, Pageable pageable);
+  Page<Product> findByDescriptionIgnoreCaseContaining(String description, Pageable pageable);
 
-  Optional<Box> findBoxById(Long productId);
+  @Query("select p.box from Product p where p.id = :productId")
+  Optional<Box> getBoxById(Long productId);
 }

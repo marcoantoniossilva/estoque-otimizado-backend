@@ -27,9 +27,4 @@ public class BaseEntity {
   public void prePersist(){
     this.registerIn = LocalDateTime.now();
   }
-
-  @PreUpdate
-  public void preUpdate(){
-    this.updatedIn = LocalDateTime.now();
-  }
 }

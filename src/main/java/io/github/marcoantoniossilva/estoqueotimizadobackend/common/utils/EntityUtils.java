@@ -8,9 +8,8 @@ import org.springframework.stereotype.Component;
 public class EntityUtils <ENTITY>{
     ModelMapper modelMapper = new ModelMapper();
 
-    public ENTITY merge(ENTITY source,ENTITY target){
+    public void merge(ENTITY source,ENTITY target){
         modelMapper.getConfiguration().setSkipNullEnabled(true).setMatchingStrategy(MatchingStrategies.STRICT);
         modelMapper.map(source, target);
-        return target;
     }
 }

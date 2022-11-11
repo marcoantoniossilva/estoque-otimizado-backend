@@ -27,17 +27,17 @@ public class ProductServiceImpl extends BaseCrudServiceImpl<Product,Long>
     }
 
     @Override
-    public Page<Product> findByDescriptionContaining(String description, Pageable pageable) {
-        return repository.findByDescriptionContaining(description, pageable);
+    public Page<Product> findByDescriptionIgnoreCaseContaining(String description, Pageable pageable) {
+        return repository.findByDescriptionIgnoreCaseContaining(description, pageable);
     }
 
     @Override
-    public Page<Product> findByBoxBoxId(String boxId, Pageable pageable) {
+    public Page<Product> findByBoxBoxId(Long boxId, Pageable pageable) {
         return repository.findByBoxId(boxId, pageable);
     }
 
     @Override
-    public Optional<Box> findBoxById(Long productId) {
-        return repository.findBoxById(productId);
+    public Optional<Box> getBoxById(Long productId) {
+        return repository.getBoxById(productId);
     }
 }

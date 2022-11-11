@@ -17,8 +17,7 @@ public class ProductInputDTO {
     @Size(min=1,max=13)
     private String barCode;
 
-    @NotBlank
-    @Size(min=1,max=13)
-    private String boxCode;
+    @NotNull
+    private Long boxId;
 
 }
